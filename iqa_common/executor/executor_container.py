@@ -17,6 +17,7 @@ class ExecutorContainer(Executor):
     implementation = 'docker'
 
     def __init__(self, container_name: str=None, container_user: str=None, name: str="ExecutorContainer", **kwargs):
+        super(ExecutorContainer, self).__init__()
         self.container_name = kwargs.get('inventory_hostname', container_name)
         self.name = kwargs.get('executor_name', name)
         self.user = kwargs.get('executor_docker_user', container_user)
@@ -26,6 +27,8 @@ class ExecutorContainer(Executor):
         docker_args = ['docker']
 
         if isinstance(command, CommandContainer):
+            # Logging docker command to use
+            self._logger.debug("Using docker command: %s" % command.docker_command)
             docker_args.append(command.docker_command)
         else:
             docker_args.append('exec')

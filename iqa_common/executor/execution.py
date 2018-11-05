@@ -52,7 +52,6 @@ class Execution(Process):
         if modified_args:
             args = modified_args
 
-        # print('Command args = %s' % args)
         super(Execution, self).__init__(args, stdout=self.fh_stdout, stderr=self.fh_stderr)
 
     def wait(self):
@@ -74,6 +73,8 @@ class Execution(Process):
         if not self.is_running():
             return
 
+        self._logger.debug("Execution timed out after %d - PID: %s - CMD: %s"
+                           % (self.command.timeout, self.pid, self.args))
         self.terminate()
         self.timed_out = True
         self.command.on_timeout(self)
@@ -88,6 +89,8 @@ class Execution(Process):
         if not self.is_running():
             return
 
+        self._logger.debug("Execution interrupted - PID: %s - CMD: %s"
+                           % (self.pid, self.args))
         self.terminate()
         self.interrupted = True
         self.cancel_timer()

@@ -30,6 +30,7 @@ class ExecutorAnsible(Executor):
         :param name:
         :param kwargs:
         """
+        super(ExecutorAnsible, self).__init__()
         self.inventory = kwargs.get('inventory_file', inventory)
         self.ansible_host = kwargs.get('ansible_host', ansible_host) if not self.inventory else kwargs.get('inventory_hostname', ansible_host)
         self.ansible_user = kwargs.get('ansible_user', ansible_user)
@@ -41,8 +42,10 @@ class ExecutorAnsible(Executor):
         ansible_args = ['ansible', '-u', self.ansible_user]
 
         if self.inventory is not None:
+            self._logger.debug("Using inventory: %s" % self.inventory)
             ansible_args += ['-i', self.inventory]
         else:
+            self._logger.debug("Using inventory host: %s" % self.ansible_host)
             ansible_args += ['-i', '%s,' % self.ansible_host]
 
         # Executing using the "raw" module
@@ -51,6 +54,7 @@ class ExecutorAnsible(Executor):
         # If given command is an instance of CommandAnsible
         # the module is read from it
         if isinstance(command, CommandAnsible):
+            self._logger.debug("Using Ansible module: %s" % command.ansible_module)
             module = command.ansible_module
         ansible_args += ['-m', module, '-a']
 

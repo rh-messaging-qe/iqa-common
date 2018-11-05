@@ -22,6 +22,7 @@
 Provides utility classes and methods to deal with TCP communication.
 """
 import socket
+import logging
 
 
 class TcpUtil(object):
@@ -43,4 +44,5 @@ class TcpUtil(object):
             test_port.close()
             return True
         except Exception:
+            logging.getLogger(__name__).debug('is_tcp_port_available failed', exc_info=1)
             return False

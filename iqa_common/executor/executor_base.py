@@ -1,5 +1,6 @@
 from .command_base import Command
 from .execution import Execution
+import logging
 
 """
 Defines the generic Executor class, which is responsible for
@@ -13,6 +14,7 @@ class Executor(object):
     Abstract and generic definition of a Command executor.
     """
     def __init__(self, **kwargs):
+        self._logger = logging.getLogger(self.__class__.__module__)
         self.name = None
 
     @property
@@ -39,6 +41,7 @@ class Executor(object):
         command.on_pre_execution(self)
 
         # Delegate execution to concrete Executor
+        self._logger.debug("Executing command with [%s] - %s" % (self.__class__.__name__, command.args))
         execution = self._execute(command)
 
         # If command is a not a daemon, wait for it

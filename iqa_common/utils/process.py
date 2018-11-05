@@ -9,6 +9,7 @@ import time
 import subprocess
 import atexit
 import traceback
+import logging
 
 
 class Process(subprocess.Popen):
@@ -21,6 +22,7 @@ class Process(subprocess.Popen):
     ATTEMPT_DELAY = 1
 
     def __init__(self, args, name=None, **kwargs):
+        self._logger = logging.getLogger(self.__class__.__module__)
         self.name = name
         atexit.register(self.teardown)
         kwargs.setdefault('bufsize', 1)
@@ -28,7 +30,8 @@ class Process(subprocess.Popen):
         try:
             super(Process, self).__init__(args, **kwargs)
         except Exception as ex:
-            traceback.print_tb(tb=ex)
+            self._logger.warning("Unable to execute command: %s" % args, exc_info=1)
+            # traceback.print_tb(tb=ex)
 
     def is_running(self):
         return self.poll() is None
@@ -45,4 +48,5 @@ class Process(subprocess.Popen):
 
         # If not terminated after all attempts, kill process
         if self.returncode is None:
+            self._logger.debug("Process still running [pid: %s] - %s - Sending a kill signal." % (self.pid, self.args))
             self.kill()

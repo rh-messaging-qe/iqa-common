@@ -20,6 +20,7 @@
 """
 Utility class to help executing OpenShift standard operations
 """
+import logging
 from iqa_common.executor import Executor, Execution, Command
 
 
@@ -31,6 +32,7 @@ class OpenShiftUtil(object):
     TIMEOUT = 30
 
     def __init__(self, executor: Executor, url: str, token: str):
+        self._logger = logging.getLogger(self.__class__.__module__)
         self.executor = executor
         self.url = url
         self.token = token
@@ -58,6 +60,8 @@ class OpenShiftUtil(object):
                             timeout=timeout, stderr=True, stdout=True)
         execution: Execution = self.executor.execute(cmd_login)
         execution.wait()
+        if not execution.completed_successfully():
+            self._logger.debug("Login has failed against %s: %s" % (self.url, execution.read_stdout()))
         return execution
 
     @login_first
@@ -73,4 +77,7 @@ class OpenShiftUtil(object):
                                timeout=30, stderr=True, stdout=True)
         execution: Execution = self.executor.execute(cmd_scale_up)
         execution.wait()
+        if not execution.completed_successfully():
+            self._logger.debug("Scaling deployment %s (replicas: %d) failed: %s"
+                               % (deployment, replicas, execution.read_stderr()))
         return execution

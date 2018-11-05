@@ -21,6 +21,7 @@
 Utility classes to retrieve information from local docker environment.
 """
 import docker
+import logging
 
 
 class DockerUtil(object):
@@ -32,6 +33,7 @@ class DockerUtil(object):
     CONTAINER_STATUS_RUNNING = "running"
     CONTAINER_STATUS_EXITED = "exited"
 
+    _logger = logging.getLogger(__name__)
     cli = docker.from_env()
 
     @staticmethod
@@ -54,6 +56,8 @@ class DockerUtil(object):
         :return:
         """
         container = DockerUtil.get_container(name)
+        ip_addr = container.attrs['NetworkSettings']['Networks'][network_name]['IPAddress']
+        DockerUtil._logger.debug("Container: %s - IP Address: %s" % (name, ip_addr))
         return container.attrs['NetworkSettings']['Networks'][network_name]['IPAddress']
 
     @staticmethod

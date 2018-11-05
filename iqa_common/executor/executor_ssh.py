@@ -21,6 +21,7 @@ class ExecutorSsh(Executor):
 
     def __init__(self, user: str, hostname: str, port: str="22",
                  ssl_private_key: str=None, name: str="ExecutorSsh", **kwargs):
+        super(ExecutorSsh, self).__init__()
         self.hostname = kwargs.get('executor_hostname', hostname)
         self.port = kwargs.get('executor_port', port)
         self.user = kwargs.get('executor_user', user)
@@ -34,6 +35,7 @@ class ExecutorSsh(Executor):
         # If an SSL private key given, use it
         if self.ssl_private_key is not None \
                 and os.path.isfile(self.ssl_private_key):
+            self._logger.debug("Using SSL Private Key - %s" % self.ssl_private_key)
             ssh_args += ['-i', self.ssl_private_key]
 
         ssh_args += ['%s@%s' % (self.user, self.hostname)]
