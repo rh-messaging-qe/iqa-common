@@ -1,5 +1,6 @@
 import subprocess
 import tempfile
+import logging
 
 from .command_base import Command
 from ..utils.process import Process
@@ -17,13 +18,14 @@ class Execution(Process):
     It wraps the command that was triggered as well as the executor
     who generated the Execution instance.
     """
-    def __init__(self, command: Command, executor, modified_args: list=[]):
+    def __init__(self, command: Command, executor, modified_args: list=[], env=None):
         """
         Instance is initialized with the command that was effectively
         executed and the Executor instance that produced this new object.
         :param command:
         :param executor:
         :param modified_args:
+        :param env:
         """
         self.command = command
         self.executor = executor
@@ -52,7 +54,8 @@ class Execution(Process):
         if modified_args:
             args = modified_args
 
-        super(Execution, self).__init__(args, stdout=self.fh_stdout, stderr=self.fh_stderr)
+        logging.debug('Executing: %s' % args)
+        super(Execution, self).__init__(args, stdout=self.fh_stdout, stderr=self.fh_stderr, env=env)
 
     def wait(self):
         """

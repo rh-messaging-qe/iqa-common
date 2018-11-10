@@ -21,6 +21,7 @@ class ExecutorContainer(Executor):
         self.container_name = kwargs.get('inventory_hostname', container_name)
         self.name = kwargs.get('executor_name', name)
         self.user = kwargs.get('executor_docker_user', container_user)
+        self.docker_host = kwargs.get('executor_docker_host')
 
     def _execute(self, command: Command):
 
@@ -39,5 +40,10 @@ class ExecutorContainer(Executor):
         docker_args.append(self.container_name)
         docker_args += command.args
 
+        # define environment when docker_host provided
+        env = dict()
+        if self.docker_host:
+            env['DOCKER_HOST'] = self.docker_host
+
         # Set new args
-        return Execution(command, self, modified_args=docker_args)
+        return Execution(command, self, modified_args=docker_args, env=env)

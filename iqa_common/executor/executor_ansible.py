@@ -16,7 +16,7 @@ class ExecutorAnsible(Executor):
 
     implementation = 'ansible'
 
-    def __init__(self, ansible_host: str=None, inventory: str=None, ansible_user: str="root", module: str="raw",
+    def __init__(self, ansible_host: str=None, inventory: str=None, ansible_user: str=None, module: str="raw",
                  name: str="ExecutorAnsible", **kwargs):
         """
         Initializes the ExecutorAnsible instance based on provided arguments.
@@ -34,12 +34,17 @@ class ExecutorAnsible(Executor):
         self.inventory = kwargs.get('inventory_file', inventory)
         self.ansible_host = kwargs.get('ansible_host', ansible_host) if not self.inventory else kwargs.get('inventory_hostname', ansible_host)
         self.ansible_user = kwargs.get('ansible_user', ansible_user)
+        self.ansible_connection = kwargs.get('ansible_connection', 'ssh')
         self.module = kwargs.get('executor_module', module)
         self.name = kwargs.get('executor_name', name)
+        self.docker_host = kwargs.get('executor_docker_host', None)
 
     def _execute(self, command: Command):
 
-        ansible_args = ['ansible', '-u', self.ansible_user]
+        ansible_args = ['ansible']
+
+        if self.ansible_user is not None:
+            ansible_args += ['-u', self.ansible_user]
 
         if self.inventory is not None:
             self._logger.debug("Using inventory: %s" % self.inventory)
