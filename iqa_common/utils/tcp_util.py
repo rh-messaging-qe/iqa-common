@@ -44,5 +44,5 @@ class TcpUtil(object):
             test_port.close()
             return True
         except Exception:
-            logging.getLogger(__name__).debug('is_tcp_port_available failed', exc_info=1)
+            logging.getLogger(__name__).debug('%s:%s is_tcp_port_available failed' % (host, port), exc_info=1)
             return False
