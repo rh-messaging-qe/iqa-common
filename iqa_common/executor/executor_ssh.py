@@ -1,8 +1,6 @@
 import os
-from sys import implementation
-
 from .executor_base import Executor
-from .execution import Execution
+from .execution import ExecutionProcess
 
 """
 Runs a command using SSH CLI.
@@ -40,4 +38,4 @@ class ExecutorSsh(Executor):
 
         ssh_args += ['%s@%s' % (self.user, self.hostname)]
 
-        return Execution(command, self, modified_args=ssh_args + command.args)
+        return ExecutionProcess(command, self, modified_args=ssh_args + command.args)

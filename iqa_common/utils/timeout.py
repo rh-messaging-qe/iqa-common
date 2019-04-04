@@ -23,6 +23,10 @@ Mechanisms for handling timeouts.
 
 import threading
 import time
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class TimeoutCallback(threading.Thread):
@@ -71,8 +75,10 @@ class TimeoutCallback(threading.Thread):
         Starts the timer
         :return:
         """
+        logger.debug("Starting timeout callback [timeout = %d]" % self.timeout)
+
         # Wait till interrupted or timed out
-        self._finished.wait(self.timeout)
+        self._finished.wait(timeout=self.timeout)
 
         # If timed out
         if not self._interrupted:
@@ -94,6 +100,8 @@ class TimeoutCallback(threading.Thread):
         task before a time out has occurred.
         :return:
         """
+        logger.debug("Interrupt requested")
         if not self._timed_out:
+            logger.debug("Processing interrupt request")
             self._interrupted = True
             self._finished.set()

@@ -1,4 +1,5 @@
-from iqa_common.executor import ExecutorLocal, ExecutorSsh, ExecutorContainer, ExecutorAnsible, Executor
+from iqa_common.executor import ExecutorLocal, ExecutorSsh, ExecutorContainer, ExecutorAnsible, Executor, \
+    ExecutorKubernetes
 
 
 class ExecutorFactory(object):
@@ -12,5 +13,7 @@ class ExecutorFactory(object):
             return ExecutorContainer(**kwargs)
         elif impl == ExecutorAnsible.implementation:
             return ExecutorAnsible(**kwargs)
+        elif impl == ExecutorKubernetes.implementation:
+            return ExecutorKubernetes(**kwargs)
         else:
             raise ValueError('Invalid executor implementation')

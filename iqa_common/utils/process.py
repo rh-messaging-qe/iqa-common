@@ -34,12 +34,24 @@ class Process(subprocess.Popen):
             # traceback.print_tb(tb=ex)
 
     def is_running(self):
+        """
+        Returns true if process is still running.
+        :return:
+        """
         return self.poll() is None
 
     def completed_successfully(self):
+        """
+        Returns true if process has ended and returncode was 0.
+        :return:
+        """
         return not self.is_running() and self.returncode == 0
 
     def teardown(self):
+        """
+        Wait for process to exit or kill it after a MAX_ATTEMPTS.
+        :return:
+        """
         # Delay till max attempts reached
         attempt = 0
         while self.is_running() and attempt < self.MAX_ATTEMPTS:

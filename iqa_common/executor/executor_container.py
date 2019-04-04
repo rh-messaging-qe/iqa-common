@@ -1,7 +1,7 @@
 from iqa_common.executor import CommandContainer
 from .command_base import Command
 from .executor_base import Executor
-from .execution import Execution
+from .execution import ExecutionProcess
 
 """
 Executor instance that runs a given Command instance using
@@ -47,4 +47,4 @@ class ExecutorContainer(Executor):
             env['DOCKER_HOST'] = self.docker_host
 
         # Set new args
-        return Execution(command, self, modified_args=docker_args, env=env)
+        return ExecutionProcess(command, self, modified_args=docker_args, env=env)

@@ -9,7 +9,7 @@ files = ["*"]
 
 setup(
     name='iqa_common',
-    version='0.1.1',
+    version='0.1.2',
     packages=find_packages(),
     package_data={'iqa_common': files},
     license='Apache 2.0',

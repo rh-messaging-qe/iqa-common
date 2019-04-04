@@ -1,7 +1,7 @@
 from .command_ansible import CommandAnsible
 from .command_base import Command
 from .executor_base import Executor
-from .execution import Execution
+from .execution import ExecutionProcess
 
 """
 Executor implementation that uses the "ansible" CLI to
@@ -13,7 +13,6 @@ class ExecutorAnsible(Executor):
     """
     Executes the given command using Ansible.
     """
-
     implementation = 'ansible'
 
     def __init__(self, ansible_host: str=None, inventory: str=None, ansible_user: str=None, module: str="raw",
@@ -32,7 +31,8 @@ class ExecutorAnsible(Executor):
         """
         super(ExecutorAnsible, self).__init__()
         self.inventory = kwargs.get('inventory_file', inventory)
-        self.ansible_host = kwargs.get('ansible_host', ansible_host) if not self.inventory else kwargs.get('inventory_hostname', ansible_host)
+        self.ansible_host = kwargs.get('ansible_host', ansible_host) \
+            if not self.inventory else kwargs.get('inventory_hostname', ansible_host)
         self.ansible_user = kwargs.get('ansible_user', ansible_user)
         self.ansible_connection = kwargs.get('ansible_connection', 'ssh')
         self.module = kwargs.get('executor_module', module)
@@ -70,4 +70,4 @@ class ExecutorAnsible(Executor):
         ansible_args.append(self.ansible_host)
 
         # Set new args
-        return Execution(command, self, modified_args=ansible_args)
+        return ExecutionProcess(command, self, modified_args=ansible_args)

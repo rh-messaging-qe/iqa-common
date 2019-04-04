@@ -1,5 +1,6 @@
 from .command_base import Command
 from .execution import Execution
+from .execution import ExecutionProcess
 import logging
 
 """
@@ -45,7 +46,7 @@ class Executor(object):
         execution = self._execute(command)
 
         # If command is a not a daemon, wait for it
-        if not command.daemon and command.timeout > 0:
+        if not command.daemon:
             execution.wait()
 
         # Processing post-execution hooks
@@ -75,4 +76,4 @@ class ExecutorLocal(Executor):
         self.name = name
 
     def _execute(self, command):
-        return Execution(command, self)
+        return ExecutionProcess(command, self)
